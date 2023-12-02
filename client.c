@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
 #define MAX_BUFFER_SIZE 1024
+
 FILE *fp1; // File pointer declaraction
 FILE *fp2;
 FILE *fp3;
@@ -39,7 +39,7 @@ void send_file(FILE *file, int socket, struct sockaddr_in server_address,socklen
     /* while loop continuously read the data from the file and store it in a
      * temporary file, from the buffer it is sending the data to the destination
      * server till the EOF */
-     //free(buffer);
+     
   }
 
   // Send an empty packet to signal the end of the file
@@ -64,29 +64,21 @@ int main(int argc, char *argv[]) {
 
   fp1 = fopen(filename1,"rb"); // Open for reading in binary mode, filename will be given
                     // as a comment line argument(Eg. video.mp4)
-  if (!fp1)
+  fp2 = fopen(filename2,"rb"); 
+  fp3 = fopen(filename3,"rb"); 
+  if(!fp1 || !fp2 || !fp3)
    {
     error_handler("File not found");
    }
-  fp2 = fopen(filename2,"rb"); // Open for reading in binary mode, filename will be given
-                    // as a comment line argument(Eg. video.mp4)
-  if (!fp2) 
-  {
-    error_handler("File not found");
-  }
-  fp3 = fopen(filename3,"rb"); // Open for reading in binary mode, filename will be given
-                    // as a comment line argument(Eg. video.mp4)
-  if (!fp3) 
-  {
-    error_handler("File not found");
-  }
 
   // Create a UDP socket
   // int socket(int domain, int type, int protocol); protocol=0(Default one)
-  int udp_socket =socket(AF_INET, SOCK_DGRAM, 0); // SOCK_DGRAM used for UDP socket
-  if (udp_socket == -1) {
+  int udp_socket =socket(AF_INET,SOCK_DGRAM, 0); // SOCK_DGRAM used for UDP socket
+  
+  if (udp_socket == -1)
+   {
     error_handler("socket() failed");
-  }
+   }
 
   // Set up the server address structure
   struct sockaddr_in server_address;
@@ -106,14 +98,13 @@ int main(int argc, char *argv[]) {
   send_file(fp1, udp_socket, server_address,sizeof(server_address)); // calling the defined function
   /* function will transfer the file pointed by file pointer fp to the
    * server_address through UDP socket */
-   send_file(fp2, udp_socket,server_address,sizeof(server_address));
-   send_file(fp3, udp_socket,server_address,sizeof(server_address));         
+   send_file(fp2,udp_socket,server_address,sizeof(server_address));
+   send_file(fp3,udp_socket,server_address,sizeof(server_address));         
 
   fclose(fp1);  
   fclose(fp2);  
   fclose(fp3);        // closing the file
   close(udp_socket); // closing the UDP socket
-
   return 0;
 }
 
